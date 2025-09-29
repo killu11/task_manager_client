@@ -1,0 +1,32 @@
+domain: "http://localhost:8080"
+
+routes:
+  user:
+    sign_in:
+      path: "/sign-in"
+      method: "POST"
+
+    sign_up:
+      path: "/sign-up"
+      method: "POST"
+
+  tasks:
+    create:
+      path: "/tasks/create"
+      method: "POST"
+
+    get_task:
+      path: "/tasks"
+      method: "GET"
+
+    get_all:
+      path: "/tasks"
+      method: "GET"
+
+    update_status:
+      path: "/tasks"
+      method: "PATCH"
+
+    delete:
+      path: "/tasks"
+      method: "DELETE"
