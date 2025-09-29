@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"strconv"
 )
 
 var (
@@ -83,4 +85,39 @@ func (c *AppClient) GetTasks() ([]*response.TaskResponse, error) {
 		return nil, fmt.Errorf("failed unmarshal response body: %v", err)
 	}
 	return taskListResponse, nil
+}
+
+func (c AppClient) UpdateStatusByTitle(title string, statusID int) (string, error) {
+	req, err := http.NewRequest(
+		conf.Routes.Task.UpdateStatus.Method,
+		conf.Domain+conf.Routes.Task.UpdateStatus.Path,
+		nil)
+
+	if err != nil {
+		return "", createReqErr
+	}
+
+	params := url.Values{}
+	params.Set("title", title)
+	params.Set("status", strconv.Itoa(statusID))
+	req.URL.RawQuery = params.Encode()
+
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Token))
+	resp, err := c.Do(req)
+
+	if err != nil {
+		return "", ErrDoRequest
+	}
+
+	defer resp.Body.Close()
+
+	messageBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed read response body")
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("%s", messageBytes)
+	}
+	return string(messageBytes), nil
 }

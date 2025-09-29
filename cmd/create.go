@@ -14,7 +14,6 @@ var createCmd = &cobra.Command{
 		title, _ := cmd.Flags().GetString("title")
 		desc, _ := cmd.Flags().GetString("description")
 		status, _ := cmd.Flags().GetInt("status")
-		fmt.Printf("Заголовок задачи: %s\nЕе описание: %s\n", title, desc)
 		response, err := appClient.CreateTask(title, desc, status)
 		if title == "" || utf8.RuneCountInString(title) < 4 {
 			fmt.Println("Заголовок не может быть пустым и должен содержать не менее 4х символов")

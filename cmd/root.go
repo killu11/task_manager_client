@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/google/shlex"
+	"github.com/kballard/go-shellquote"
 	"gopkg.in/spf13/cobra.v0"
 )
 
@@ -49,7 +50,11 @@ func startInteractiveSession(cmd *cobra.Command) {
 
 // переделать метод, работает неправильно)
 func executeCobraCommand(rootCmd *cobra.Command, input string) {
-	args := splitArgs(input)
+	args, err := shellquote.Split(input)
+
+	if err != nil {
+		log.Fatalln("Ошибка парсера", err)
+	}
 	if len(args) == 0 {
 		return
 	}
@@ -61,14 +66,12 @@ func executeCobraCommand(rootCmd *cobra.Command, input string) {
 
 	for _, cmd := range rootCmd.Commands() {
 		if args[0] == cmd.Name() {
-			// ✅ ПРАВИЛЬНО: парсим оригинальные аргументы
-			//if err := cmd.ParseFlags(args[1:]); err != nil {
-			//	fmt.Printf("Ошибка парсинга флагов: %v\n", err)
-			//	return
-			//}
-			cmd.SetArgs(args)
 
-			// ✅ ПРАВИЛЬНО: передаем оригинальные аргументы
+			if err := cmd.ParseFlags(args[1:]); err != nil {
+				fmt.Printf("Ошибка парсинга флагов: %v\n", err)
+				return
+			}
+
 			if cmd.RunE != nil {
 				if err := cmd.RunE(cmd, args[1:]); err != nil {
 					fmt.Printf("Ошибка: %v\n", err)

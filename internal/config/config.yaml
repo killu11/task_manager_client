@@ -16,7 +16,7 @@ routes:
       method: "POST"
 
     get_task:
-      path: "/tasks/{name}"
+      path: "/tasks"
       method: "GET"
 
     get_all:
@@ -24,9 +24,9 @@ routes:
       method: "GET"
 
     update_status:
-      path: "/tasks/{name}"
-      method: "PUT"
+      path: "/tasks"
+      method: "PATCH"
 
     delete:
-      path: "/tasks/{id}"
+      path: "/tasks"
       method: "DELETE"
