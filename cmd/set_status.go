@@ -11,10 +11,6 @@ var updateStatusCmd = &cobra.Command{
 	Short: "Обновляет статус задачи",
 	Long:  "Обновляет статус задачи по её заголовку и номеру статуса",
 	Run: func(cmd *cobra.Command, args []string) {
-		if !appClient.TokenExist() {
-			fmt.Println("Необходимо войти или создать учетную запись!")
-			return
-		}
 		title, _ := cmd.Flags().GetString("title")
 		statusID, _ := cmd.Flags().GetInt("status")
 
